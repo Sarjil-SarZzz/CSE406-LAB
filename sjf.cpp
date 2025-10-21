@@ -1,47 +1,43 @@
-#include<bits/stdc++.h>
+#include <iostream>
 using namespace std;
-#define loop(i,n) for(int i=0;i<n;i++)
 
-int main(){
+int main() {
     int n;
-    cout<<"enter number of id: ";
-    cin>>n;
-    int arrival[n],bt[n],pid[n],wt[n],tat[n];
-    cout<<"enter arrival: ";
-    loop(i,n) cin>>arrival[i];
-    cout<<"enter burst: ";
-    loop(i,n) {pid[i]=i+1,cin>>bt[i];}
-    int temp;
-
-    loop(i,n){
-        int pos;
-        for(int j=i+1;j<n;j++){
-            if(bt[j]<bt[i]){
-                swap(pid[i],pid[j]);
-                swap(bt[i],bt[j]);
-                swap(arrival[i],arrival[j]);
+    cout << "Enter number of processes: ";
+    cin >> n;
+    int pid[n], bt[n], wt[n], tat[n];
+    float avg_wt = 0, avg_tat = 0;
+    for(int i = 0; i < n; i++) {
+        cout << "Enter burst time for process " << i+1 << ": ";
+        cin >> bt[i];
+        pid[i] = i + 1;
+    }
+    for(int i = 0; i < n - 1; i++) {
+        for(int j = i + 1; j < n; j++) {
+            if(bt[i] > bt[j]) {
+                swap(bt[i], bt[j]);
+                swap(pid[i], pid[j]);
             }
         }
     }
-    loop(i,n){
-        wt[i]=0;
-        for(int j=0;j<i;j++){
-            wt[i]+=bt[j];
-        }
+    wt[0] = 0;
+    for(int i = 1; i < n; i++) {
+        wt[i] = 0;
+        for(int j = 0; j < i; j++)
+            wt[i] += bt[j];
     }
-    double avgWT=0,avgTAT=0;
-    loop(i,n){
-        tat[i]=bt[i]+wt[i];
-        avgWT+=wt[i];
-        avgTAT+=tat[i];
-
+    for(int i = 0; i < n; i++) {
+        tat[i] = bt[i] + wt[i];
+        avg_wt += wt[i];
+        avg_tat += tat[i];
     }
-    cout<<left<<setw(5)<<"PID"<<setw(10)<<"Arrival"<<setw(10)<<"Burst"<<setw(10)<<"Waiting"<<setw(10)<<"Turnaround"<<"\n";
+    avg_wt /= n;
+    avg_tat /= n;
+    cout << "\nProcess\tBurst Time\tWaiting Time\tTurnaround Time\n";
+    for(int i = 0; i < n; i++)
+        cout << "P" << pid[i] << "\t" << bt[i] << "\t\t" << wt[i] << "\t\t" << tat[i] << endl;
 
-    loop(i,n){
-        cout<<"P"<<pid[i]<<setw(10)<<arrival[i]<<setw(10)<<bt[i]<<setw(10)<<wt[i]<<setw(10)<<tat[i]<<"\n";
-
-    }
-    cout<<"Average Waiting Time: "<<avgWT<<endl;
-    cout<<"Average Turnaround Time: "<<avgTAT<<endl;
+    cout << "\nAverage Waiting Time = " << avg_wt;
+    cout << "\nAverage Turnaround Time = " << avg_tat << endl;
+    return 0;
 }
